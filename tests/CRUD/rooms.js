@@ -26,6 +26,9 @@ var json=null;
 var resourceAsoc=null;
 var endPoint=null;
 var endPoint2=null;
+var meetingId = null;
+var jsonMeeting = null;
+var num =  null;
 /*TESTS*/
 describe('CRUD Testing for Room routes', function() {
 	process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -113,16 +116,67 @@ describe('CRUD Testing for Room routes', function() {
 			});	
 	});
 /*
-* move this tcs to services/789/rooms/132/meetings
+* this Test to verify the service room with the method get for read the
+* all meetings in room
 */
-	it('Get /rooms/{roomId}/meetings, api returns all meetings ',function(done){	
+	it('Get /rooms/{roomId}/meetings, returns all meetings ',function(done){	
 		endPoint=endPoint+'/meetings';
 		roomManagerAPI.
 			get(endPoint,function(err,res){
 				expect(res.status).to.equal(config.httpStatus.Ok);
-				//TODO
-				done();
+				mongodb.findDocuments('rooms',function(doc){
+					rooms=doc;
+					expect(err).to.be.null;
+					expect(res.status).to.equal(config.httpStatus.Ok);
+				});
 			});
 	});
+/*
+ * this Test to verify the service room with the method post for create the
+ * meeting in room
+*/
+	it('POST /rooms/{roomId}/meetings, create the meeting in room',function(done){	
+		num = displayName.substring(10);
+		jsonMeeting = util.generatemeetingJson(num);
+		roomManagerAPI.
+			post(token,endPoint,jsonMeeting,function(err,res){
+				expect(res.status).to.equal(config.httpStatus.Ok);
+				done();
+			});	
+	});
+/*
+* this Test to verify the service room with the method get for read the
+* meeting in room
+*/
+	it('GET /rooms/{:roomId}/meetings/{:meetingId}, read the meeting in room',function(done){	
+			num = displayName.substring(10);
+			jsonMeeting = util.generatemeetingJson(num);
+			roomManagerAPI.
+				post(token,endPoint,jsonMeeting,function(err,res){
+					meetingId = res.body._id;
+					get(endPoint+'/'+meetingId,function(er,re){
+						expect(re.status).to.equal(config.httpStatus.Ok);
+						done();
+					});
+				});	
+		});
+/*
+* This Test to verify the service room with the method put for updates the
+* meeting in room
+*/
+	it('PUT rooms/{:roomId}/meetings/{:meetingId}, updates the meeting in room',function(done){	
+			num = displayName.substring(10);
+			jsonMeeting = util.generatemeetingJson(num);
+			roomManagerAPI.
+				post(token,endPoint,jsonMeeting,function(err,res){
+					expect(res.status).to.equal(config.httpStatus.Ok);
+					meetingId = res.body._id
+					jsonMeeting.title = 'ChangedByAPI'
+					put(token,endPoint+'/'+meetingId,jsonMeeting,function(er,re){
+						expect(re.status).to.equal(config.httpStatus.Ok);
+						done();
+					});
+				});	
+		});
 
 });
