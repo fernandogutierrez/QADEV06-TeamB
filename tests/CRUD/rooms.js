@@ -7,6 +7,7 @@ author: Andres Uzeda
 var init = require('../../init');
 //var init = require('../init');
 var expect = require('chai').expect;
+var should 		  = require('chai').should();
 var RequireServices = require(GLOBAL.initialDirectory+'/lib/req-serv.js').RequireServices;
 var requireServices = new RequireServices();
 var config =require(GLOBAL.initialDirectory+'/config/config.json');
@@ -18,6 +19,7 @@ var mongodb = requireServices.mongodb();
 var endPoints	=	requireServices.endPoint();
 var resourceConfig = requireServices.resourceConfig();
 var util = requireServices.util();
+var compareProp = requireServices.compareResults();
 //variables
 var token=null;
 var room=null;
@@ -84,19 +86,14 @@ describe('CRUD Testing for Room routes', function() {
 		endPoint=endPoint+'/'+room._id;
 		roomManagerAPI.
 			get(endPoint,function(err,res){
-				expect(err).to.be.null;
-				expect(res.status).to.equal(config.httpStatus.Ok);
-				expect(res.body).to.have.property("displayName")
-					.and.be.equal(room.displayName);
-				expect(res.body).to.have.property("customDisplayName")
-					.and.be.equal(room.customDisplayName);
-				expect(res.body).to.have.property("emailAddress")
-					.and.be.equal(room.emailAddress);
-				expect(res.body).to.have.property("enabled")
-					.and.be.equal(room.enabled);
-				expect(res.body).to.have.property("_id")
-					.and.be.equal(room._id.toString());
+				should.not.exist(err);
+				expect(res.body._id).not.equal(null);
+				verifyProp = compareProp.verifyProperties('rooms', res.body);
+				expect(true).to.equal(verifyProp);
+				compareProp.verifyValues('rooms', room._id, res.body, function(flag){
+				expect(flag).to.equal(true);
 				done();
+				});
 			});
 	});	
 
@@ -108,10 +105,13 @@ describe('CRUD Testing for Room routes', function() {
 		roomManagerAPI.
 			put(token,endPoint,json,function(err,res){
 				json=roomJson.roomQueries.displayName;
-				mongodb.findDocument('rooms',json,function(doc){
-					expect(res.body).to.have.property("customDisplayName")
-					.and.be.equal(doc.customDisplayName);
-					done();
+				should.not.exist(err);
+				expect(res.body._id).not.equal(null);
+				verifyProp = compareProp.verifyProperties('rooms', res.body);
+				expect(true).to.equal(verifyProp);
+				compareProp.verifyValues('rooms', room._id, res.body, function(flag){
+				expect(flag).to.equal(true);
+				done();
 				});
 			});	
 	});
