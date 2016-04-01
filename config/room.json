@@ -30,7 +30,8 @@
     "roomPost": {
                 "resourceId": "roomId",
                  "quantity": 100
-                }
+                },
+    "roomProperties": ["displayName", "emailAddress", "enabled","customDisplayName", "_id"]
 }
 
 
