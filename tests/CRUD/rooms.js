@@ -124,10 +124,11 @@ describe('CRUD Testing for Room routes', function() {
 		roomManagerAPI.
 			get(endPoint,function(err,res){
 				expect(res.status).to.equal(config.httpStatus.Ok);
-				mongodb.findDocuments('rooms',function(doc){
+				mongodb.findDocuments('meetings',function(doc){
 					rooms=doc;
 					expect(err).to.be.null;
 					expect(res.status).to.equal(config.httpStatus.Ok);
+					done();
 				});
 			});
 	});
@@ -140,23 +141,31 @@ describe('CRUD Testing for Room routes', function() {
 		jsonMeeting = util.generatemeetingJson(num);
 		roomManagerAPI.
 			post(token,endPoint,jsonMeeting,function(err,res){
+				mongodb.findDocuments('meetings',function(doc){
 				expect(res.status).to.equal(config.httpStatus.Ok);
+				rooms=doc;
+				expect(err).to.be.null;
 				done();
+				});
 			});	
 	});
 /*
 * this Test to verify the service room with the method get for read the
 * meeting in room
 */
-	it('GET /rooms/{:roomId}/meetings/{:meetingId}, read the meeting in room',function(done){	
+	it('Get /rooms/{:roomId}/meetings/{:meetingId}, read the meeting in room',function(done){	
 			num = displayName.substring(10);
 			jsonMeeting = util.generatemeetingJson(num);
 			roomManagerAPI.
 				post(token,endPoint,jsonMeeting,function(err,res){
 					meetingId = res.body._id;
 					get(endPoint+'/'+meetingId,function(er,re){
-						expect(re.status).to.equal(config.httpStatus.Ok);
-						done();
+						mongodb.findDocuments('meetings',function(doc){
+							rooms=doc;
+							expect(err).to.be.null;
+							expect(re.status).to.equal(config.httpStatus.Ok);
+							done();
+						});
 					});
 				});	
 		});
@@ -173,8 +182,12 @@ describe('CRUD Testing for Room routes', function() {
 					meetingId = res.body._id
 					jsonMeeting.title = 'ChangedByAPI'
 					put(token,endPoint+'/'+meetingId,jsonMeeting,function(er,re){
-						expect(re.status).to.equal(config.httpStatus.Ok);
-						done();
+						mongodb.findDocuments('meetings',function(doc){
+							rooms=doc;
+							expect(err).to.be.null;
+							expect(re.status).to.equal(config.httpStatus.Ok);
+							done();
+						});
 					});
 				});	
 		});
