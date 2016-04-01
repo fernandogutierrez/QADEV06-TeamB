@@ -46,7 +46,7 @@ describe('meetings', function () {
 					.findDocument('rooms', json, function(res2){
 						roomId = res2._id;
 						serviceId = res2.serviceId;
-						displayName=res2.displayName;
+						displayName = res2.displayName;
 						done();
 					});
 			});
@@ -64,8 +64,10 @@ describe('meetings', function () {
 						endPointLocationById = util.stringReplace(endPointById,locationConfig.locationIdReplace,location._id);
 						meetingConfig.locationId.locationId = locationId;
 						var json = meetingConfig.locationId;
+						// I create this method to store the end Point
+						var _endPoint = roomsEndPoint + '/' + roomId;
 						roomManagerAPI.
-							put(token, roomsEndPoint + '/' + roomId, json, function(err,res){
+							put(token, _endPoint, json, function(err,res){
 								done();
 							});
 					});
@@ -78,11 +80,10 @@ describe('meetings', function () {
 				
 					meetingJSon.start = meetingConfig.startMeeting.substring(0,19);
 					meetingJSon.end = meetingConfig.endMeeting.substring(0,19);
-                   
+                // I create this method to store the end Point
                 var _endPoint = servicesEndPoint + '/' + 
                                 serviceId + rooms + '/' + 
                                 roomId + meetings;
-                                console.log(_endPoint);
 
 						roomManagerAPI
 							.postwithBasic(basic,_endPoint, meetingJSon, function(err, res){
@@ -94,10 +95,11 @@ describe('meetings', function () {
 			});
 
 			after('Deleting The location, resources and meeting', function (done) {
+				// I create this method to store the end Point
                var _endPoint = servicesEndPoint + '/' + serviceId + rooms 
                                 + '/' + roomId + meetings + '/' + meetingId1;
 
-               console.log(_endPoint + '  ...end pointttt');
+               
 				roomManagerAPI
 					.del(token,endPointLocationById, function (err,res) {
                         
@@ -114,6 +116,7 @@ describe('meetings', function () {
 				it('Then ensure that is not possible assign the new meeting to room at the same time', function (done) {
 					var num = displayName.substring(10);
 					var meetingJSon = util.generatemeetingJson(num);
+				 // I create this method to store the end Point
 					var _endPoint = servicesEndPoint + '/' + serviceId + '/' 
 					                + rooms + '/' + roomId + '/' + meetings;
 

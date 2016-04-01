@@ -1,5 +1,4 @@
-//scenario3.1.js
-//Ivan Morales Camacho
+
 var init 	= require('../../init');
 var expect 	= require('chai').expect;
 
