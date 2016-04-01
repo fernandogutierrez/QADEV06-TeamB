@@ -4,16 +4,15 @@
 var expect = require('chai').expect;
 //import libraries
 var init = require('../../init');
-
-var RequireServices = require(GLOBAL.initialDirectory+'/lib/req-serv.js').RequireServices;
+//I added req-serv.js into node_modules
+var RequireServices = require('req-serv.js').RequireServices;
 var requireServices = new RequireServices();
 
 var config = requireServices.config();
 var endPoints = requireServices.endPoint();
 var roomManagerAPI = requireServices.roomManagerAPI();
 var apk = require(GLOBAL.initialDirectory+config.path.apk);
-
-//url 
+ 
 
 var apkEndPoint = config.url + endPoints.apk;
 

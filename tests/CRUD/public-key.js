@@ -3,7 +3,8 @@ var expect = require('chai').expect;
 //import libraries
 var init = require('../../init');
 var config = require(GLOBAL.initialDirectory+'/config/config.json');
-var RequireServices = require(GLOBAL.initialDirectory+'/lib/req-serv.js').RequireServices;
+//I added req-serv.js into node_modules
+var RequireServices = require('req-serv.js').RequireServices;
 var requireServices = new RequireServices();
 
 //var endPoints = requireServices.endPoint();
