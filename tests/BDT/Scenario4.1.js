@@ -38,7 +38,7 @@ var quantityOfLocation = 0;
 describe('Scenario 4 – The same room should not be associated at two different locations', function (done) {
 		this.timeout(config.timeOut);
 
-		process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 	context('Given there is a main location \'Fundacion Jala\' created',function(){
 
 		before('Given there is a main location \'Fundacion Jala\' created',function (done) {		
@@ -113,11 +113,11 @@ describe('Scenario 4 – The same room should not be associated at two different
 		});
 
 		after('Delete all locations have been created',function (done) {
-
+            var _endPoint = endPoint + '/' + allLocations[i]._id;
 			var count = 0;
 			for (var i = 0; i < allLocations.length; i++) {
 				roomManagerAPI
-					.del(token,endPoint + '/' + allLocations[i]._id,function(err,res){
+					.del(token, _endPoint, function(err,res){
 						count++;
 							if(count == allLocations.length){
 								done();

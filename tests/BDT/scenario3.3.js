@@ -66,7 +66,7 @@ describe('Scenario 3.3 – Create a meeting in a room associated to location lat
 					.post(token,endPoint,locationJson,function (err,res) {
 						locationID = res.body._id;
 						locationName = res.body.customName;
-						endPointLocationById = util.stringReplace(endPointById,locationConfig.locationIdReplace,locationID);
+						endPointLocationById = util.stringReplace(endPointById, locationConfig.locationIdReplace, locationID);
 						done();
 					});
 		});
@@ -92,8 +92,11 @@ describe('Scenario 3.3 – Create a meeting in a room associated to location lat
 		describe('When you want to create a meeting in the roomA \n', function () {
 			
 			after('delete the meeting ',function (done) {
+				var _endPointMeeting = servicesEndPoint + '/' + room.serviceId +
+				                       '/' + rooms + '/' + roomId + '/' + meetings +
+				                        '/' + meetingId;
 					roomManagerAPI
-						.delwithBasic(basic, servicesEndPoint + '/' + room.serviceId + '/' + rooms + '/' + roomId + '/' + meetings + '/' + meetingId, function(err, res){
+						.delwithBasic(basic, _endPointMeeting, function(err, res){
 							done();
 						});
 			});		
@@ -113,7 +116,10 @@ describe('Scenario 3.3 – Create a meeting in a room associated to location lat
 				meetingsConfig.meetingJSon.roomEmail = room.emailAddress
 				meetingsConfig.meetingJSon.start = util.getDate(4);
 		   		meetingsConfig.meetingJSon.end = util.getDate(5);
-				associateEndPointM=servicesEndPoint + '/' + room.serviceId + rooms + '/' + roomId + meetings;
+
+		   		//I created this variable to store the associated endPoint
+				associateEndPointM = servicesEndPoint + '/' + room.serviceId + 
+				                     rooms + '/' + roomId + meetings;
 
 				roomManagerAPI
 					.postwithBasic(basic,associateEndPointM, meetingsConfig.meetingJSon, function(err, res){

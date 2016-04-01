@@ -57,8 +57,11 @@ describe('meetings', function () {
 		context('Given I have a Room', function(){
 			before('And a location assigned at to Room', function (done) {
 				console.log('\t\tAnd a location assigned at to Room');
+
 				locationJson = util.generateLocationJson(size.nameSize,size.customNameSize,size.description);
+
 				roomManagerAPI
+
 					.post(token,endPointlocation,locationJson,function (err,res) {
 						location = res.body;
 						locationId = res.body._id;
@@ -74,12 +77,16 @@ describe('meetings', function () {
 
 			before('And one meeting assigned at the Room', function(done){
 				console.log('\t\tAnd one meeting assigned at the Room');
+				var _endPointMeet = servicesEndPoint + '/' + serviceId + '/' + 
+				                    rooms + '/' + roomId + '/' + meetings;
+
 				var num = displayName.substring(10);
 				var meetingJSon = util.generatemeetingJson(num);
 				meetingJSon.start = meetingConfig.startMeeting;
 				meetingJSon.end = meetingConfig.endMeeting;
+
 				roomManagerAPI
-					.postwithBasic(basic, servicesEndPoint + '/' + serviceId + '/' + rooms + '/' + roomId + '/' + meetings, meetingJSon, function(err, res){
+					.postwithBasic(basic, _endPointMeet, meetingJSon, function(err, res){
 						meetingId1 = res.body._id;
 						done();
 					});
@@ -89,7 +96,11 @@ describe('meetings', function () {
 				roomManagerAPI
 				  	.del(token,endPointLocationById,function (err,res) {
 						roomManagerAPI
-							.delwithBasic(basic, servicesEndPoint + '/' + serviceId + '/' + rooms + '/' + roomId + '/' + meetings + '/' + meetingId1, function(err, res){
+						   var _endPoint = servicesEndPoint + '/' + serviceId + 
+						                   '/' + rooms + '/' + roomId + '/' + 
+						                   meetings + '/' + meetingId1;
+
+							.delwithBasic(basic, _endPoint, function(err, res){
 								meetingId1 = null;
 								done();
 							});
@@ -98,11 +109,21 @@ describe('meetings', function () {
 
 			describe('When a new meeting is assigned to same Room at different time', function () {
 				after('deleting the new meeting', function (done) {
+					//I created this variable to store the enpoint
+					var _endPoint = servicesEndPoint + '/' + serviceId + '/' + 
+					                rooms + '/' + roomId + '/' + meetings + '/' 
+					                + meetingId2;
+
 					roomManagerAPI
-						.delwithBasic(basic, servicesEndPoint + '/' + serviceId + '/' + rooms + '/' + roomId + '/' + meetings + '/' + meetingId2, function(err, res){
+						.delwithBasic(basic, _endPoint, function(err, res){
+							//I created this variable to store the enpoint
+							var _endPointMeet = servicesEndPoint + '/' + serviceId 
+							                  + '/' + rooms + '/' + roomId + '/' 
+							                  + meetings + '/' + meetingId3;
+
 							meetingId2 = null;
 							roomManagerAPI
-								.delwithBasic(basic, servicesEndPoint + '/' + serviceId + '/' + rooms + '/' + roomId + '/' + meetings + '/' + meetingId3, function(err, res){
+								.delwithBasic(basic, _endPointMeet, function(err, res){
 									meetingId3 = null;
 									done();
 								});
@@ -115,15 +136,22 @@ describe('meetings', function () {
 					var meetingJSon = util.generatemeetingJson(num);
 					meetingJSon.start = meetingConfig.startMeeting2;
 					meetingJSon.end = meetingConfig.endMeeting2;
+
+					// I added _endPointMeet variable for using in roomManagerAPI.postwithBasic
+					var _endPointMeet = servicesEndPoint + '/' + 
+					                    serviceId + '/' + rooms + '/' + 
+					                    roomId + '/' + meetings;
+
 					roomManagerAPI
-						.postwithBasic(basic, servicesEndPoint + '/' + serviceId + '/' + rooms + '/' + roomId + '/' + meetings, meetingJSon, function(err, res){
+						.postwithBasic(basic, _endPointMeet, meetingJSon, function(err, res){
 							meetingId2 = res.body._id;
 							expect(res.status).to.equal(config.httpStatus.Ok);
 							expect(res.body).to.not.be.undefined;
 							meetingJSon.start = meetingConfig.startMeeting3;
 							meetingJSon.end = meetingConfig.endMeeting3;
+
 							roomManagerAPI
-								.postwithBasic(basic, servicesEndPoint + '/' + serviceId + '/' + rooms + '/' + roomId + '/' + meetings, meetingJSon, function(err, res1){
+								.postwithBasic(basic, _endPointMeet, meetingJSon, function(err, res1){
 									meetingId3 = res1.body._id;
 									expect(res1.status).to.equal(config.httpStatus.Ok);
 									expect(res1.body).to.not.be.undefined;

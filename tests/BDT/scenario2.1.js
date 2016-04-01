@@ -1,5 +1,4 @@
-//scenario2.1.js
-//by Miguel Angel Terceros Caballero
+
 var init 	= require('../../init');
 var expect 	= require('chai').expect;
 
@@ -31,7 +30,7 @@ var timeout	  = config.timeOut;
 // declare variables
 var size = locationConfig.size, idRoom, idService, idLocation, 	
     idLocation2, idMeeting, token, roomName;
-    
+
 /*
  Locations
 	 Scenario 2.1: Change the location of a meeting
@@ -103,8 +102,10 @@ describe('Scenario 2.1 – We have a meeting in a room with a determinate locati
 		});
 
 		after('Deleting the meeting', function (done) {
+			var _endPoint = servicesEndPoint + '/' + idService + '/' + rooms
+			                + '/' + idRoom + '/' + meetings + '/' + idMeeting;
 			roomManagerAPI
-				.delwithBasic(basic, servicesEndPoint + '/' + idService + '/' + rooms + '/' + idRoom + '/' + meetings + '/' + idMeeting, function(err, res){
+				.delwithBasic(basic, _endPoint, function(err, res){
 					done();
 				});
 		});
