@@ -1,12 +1,14 @@
 
 var init = require('../../init');
-var config = require(GLOBAL.initialDirectory+'/config/config.json');
+
 var expect = require('chai').expect;
 var ObjectId = require('mongodb').ObjectId;
 
-var RequireServices = require(GLOBAL.initialDirectory + '/lib/req-serv.js').RequireServices;
+//I added req-serv.js into node_modules
+var RequireServices = require('req-serv.js').RequireServices;
 var requireServices = new RequireServices();
 
+var config = requireServices.config();
 var tokenAPI = requireServices.tokenAPI();
 var roomManagerAPI = requireServices.roomManagerAPI();
 var endPoint = requireServices.endPoint();

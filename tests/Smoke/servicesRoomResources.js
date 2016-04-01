@@ -4,8 +4,7 @@
 var init = require('../../init');
 var expect = require('chai').expect;
 
-var RequireServices = require(GLOBAL.initialDirectory+'/lib/req-serv.js').RequireServices;
-
+var RequireServices = require('req-serv.js').RequireServices;
 var requireServices = new RequireServices();
 
 var config          = requireServices.config();
