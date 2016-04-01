@@ -7,6 +7,7 @@ author: Andres Uzeda
 var init = require('../../init');
 //var init = require('../init');
 var expect = require('chai').expect;
+var should 		  = require('chai').should();
 var RequireServices = require(GLOBAL.initialDirectory+'/lib/req-serv.js').RequireServices;
 var requireServices = new RequireServices();
 var config =require(GLOBAL.initialDirectory+'/config/config.json');
@@ -18,6 +19,7 @@ var mongodb = requireServices.mongodb();
 var endPoints	=	requireServices.endPoint();
 var resourceConfig = requireServices.resourceConfig();
 var util = requireServices.util();
+var compareProp = requireServices.compareResults();
 //variables
 var token=null;
 var room=null;
@@ -26,6 +28,9 @@ var json=null;
 var resourceAsoc=null;
 var endPoint=null;
 var endPoint2=null;
+var meetingId = null;
+var jsonMeeting = null;
+var num =  null;
 /*TESTS*/
 describe('CRUD Testing for Room routes', function() {
 	process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -81,19 +86,14 @@ describe('CRUD Testing for Room routes', function() {
 		endPoint=endPoint+'/'+room._id;
 		roomManagerAPI.
 			get(endPoint,function(err,res){
-				expect(err).to.be.null;
-				expect(res.status).to.equal(config.httpStatus.Ok);
-				expect(res.body).to.have.property("displayName")
-					.and.be.equal(room.displayName);
-				expect(res.body).to.have.property("customDisplayName")
-					.and.be.equal(room.customDisplayName);
-				expect(res.body).to.have.property("emailAddress")
-					.and.be.equal(room.emailAddress);
-				expect(res.body).to.have.property("enabled")
-					.and.be.equal(room.enabled);
-				expect(res.body).to.have.property("_id")
-					.and.be.equal(room._id.toString());
+				should.not.exist(err);
+				expect(res.body._id).not.equal(null);
+				verifyProp = compareProp.verifyProperties('rooms', res.body);
+				expect(true).to.equal(verifyProp);
+				compareProp.verifyValues('rooms', room._id, res.body, function(flag){
+				expect(flag).to.equal(true);
 				done();
+				});
 			});
 	});	
 
@@ -105,24 +105,91 @@ describe('CRUD Testing for Room routes', function() {
 		roomManagerAPI.
 			put(token,endPoint,json,function(err,res){
 				json=roomJson.roomQueries.displayName;
-				mongodb.findDocument('rooms',json,function(doc){
-					expect(res.body).to.have.property("customDisplayName")
-					.and.be.equal(doc.customDisplayName);
-					done();
+				should.not.exist(err);
+				expect(res.body._id).not.equal(null);
+				verifyProp = compareProp.verifyProperties('rooms', res.body);
+				expect(true).to.equal(verifyProp);
+				compareProp.verifyValues('rooms', room._id, res.body, function(flag){
+				expect(flag).to.equal(true);
+				done();
 				});
 			});	
 	});
 /*
-* move this tcs to services/789/rooms/132/meetings
+* this Test to verify the service room with the method get for read the
+* all meetings in room
 */
-	it('Get /rooms/{roomId}/meetings, api returns all meetings ',function(done){	
+	it('Get /rooms/{roomId}/meetings, returns all meetings ',function(done){	
 		endPoint=endPoint+'/meetings';
 		roomManagerAPI.
 			get(endPoint,function(err,res){
 				expect(res.status).to.equal(config.httpStatus.Ok);
-				//TODO
-				done();
+				mongodb.findDocuments('meetings',function(doc){
+					rooms=doc;
+					expect(err).to.be.null;
+					expect(res.status).to.equal(config.httpStatus.Ok);
+					done();
+				});
 			});
 	});
+/*
+ * this Test to verify the service room with the method post for create the
+ * meeting in room
+*/
+	it('POST /rooms/{roomId}/meetings, create the meeting in room',function(done){	
+		num = displayName.substring(10);
+		jsonMeeting = util.generatemeetingJson(num);
+		roomManagerAPI.
+			post(token,endPoint,jsonMeeting,function(err,res){
+				mongodb.findDocuments('meetings',function(doc){
+				expect(res.status).to.equal(config.httpStatus.Ok);
+				rooms=doc;
+				expect(err).to.be.null;
+				done();
+				});
+			});	
+	});
+/*
+* this Test to verify the service room with the method get for read the
+* meeting in room
+*/
+	it('Get /rooms/{:roomId}/meetings/{:meetingId}, read the meeting in room',function(done){	
+			num = displayName.substring(10);
+			jsonMeeting = util.generatemeetingJson(num);
+			roomManagerAPI.
+				post(token,endPoint,jsonMeeting,function(err,res){
+					meetingId = res.body._id;
+					get(endPoint+'/'+meetingId,function(er,re){
+						mongodb.findDocuments('meetings',function(doc){
+							rooms=doc;
+							expect(err).to.be.null;
+							expect(re.status).to.equal(config.httpStatus.Ok);
+							done();
+						});
+					});
+				});	
+		});
+/*
+* This Test to verify the service room with the method put for updates the
+* meeting in room
+*/
+	it('PUT rooms/{:roomId}/meetings/{:meetingId}, updates the meeting in room',function(done){	
+			num = displayName.substring(10);
+			jsonMeeting = util.generatemeetingJson(num);
+			roomManagerAPI.
+				post(token,endPoint,jsonMeeting,function(err,res){
+					expect(res.status).to.equal(config.httpStatus.Ok);
+					meetingId = res.body._id
+					jsonMeeting.title = 'ChangedByAPI'
+					put(token,endPoint+'/'+meetingId,jsonMeeting,function(er,re){
+						mongodb.findDocuments('meetings',function(doc){
+							rooms=doc;
+							expect(err).to.be.null;
+							expect(re.status).to.equal(config.httpStatus.Ok);
+							done();
+						});
+					});
+				});	
+		});
 
 });
