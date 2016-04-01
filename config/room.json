@@ -1,5 +1,5 @@
 {
-    "displayName" : "Floor1Room1",
+    "displayName" : "Floor1Room30",
     "resources" : {
         "roomsAsoc":
             {
@@ -9,16 +9,16 @@
     "roomQueries" : {
         "displayName":
             {
-           "displayName":"Floor1Room1" 
+           "displayName":"Floor1Room30" 
             },
         "roomPut":
             {
-                 "emailAddress" : "Floor1Room1@sinergy.eng",
-                  "displayName" : "Floor1Room1",
+                 "emailAddress" : "Floor1Room30@sinergy.eng",
+                  "displayName" : "Floor1Room30",
                   "resources" : [],
                   "enabled" : true,
                   "locationId" : null,
-                  "customDisplayName" : "Floor1Room1",
+                  "customDisplayName" : "Floor1Room30",
                    "code" : "",
                    "__v" : 0
             },
@@ -26,7 +26,12 @@
            {
              "quantity": 1 
            }
-    }
+    },
+    "roomPost": {
+                "resourceId": "roomId",
+                 "quantity": 100
+                },
+    "roomProperties": ["displayName", "emailAddress", "enabled","customDisplayName", "_id"]
 }
 
 
