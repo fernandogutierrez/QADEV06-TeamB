@@ -20,7 +20,9 @@ var resourceConfig = requireServices.resourceConfig();
 var util = requireServices.util();
 //variables
 var token,room,resource,json,resourceAsoc,endPoint,endPoint2;
-
+var meetingId = null;
+var jsonMeeting = null;
+var num =  null;
 var statusExpected = config.httpStatus.Ok;
 
 /*TESTS*/
@@ -103,7 +105,53 @@ describe('Smoke Testing for Room routes', function() {
 				done();
 			});
 	});
-
+/**
+ * Smoke Test to the service room with the method post for create the
+ * meeting in room
+ */
+	it('POST /rooms/{roomId}/meetings, Verify the status 200',function(done){	
+		num = displayName.substring(10);
+		jsonMeeting = util.generatemeetingJson(num);
+		roomManagerAPI.
+			post(token,endPoint,jsonMeeting,function(err,res){
+				expect(res.status).to.equal(config.httpStatus.Ok);
+				done();
+			});	
+	});
+/*
+* Smoke Test to the service room with the method get for read the
+* meeting in room
+*/
+	it('GET /rooms/{:roomId}/meetings/{:meetingId}, Verify the status 200',function(done){	
+			num = displayName.substring(10);
+			jsonMeeting = util.generatemeetingJson(num);
+			roomManagerAPI.
+				post(token,endPoint,jsonMeeting,function(err,res){
+					meetingId = res.body._id;
+					get(endPoint+'/'+meetingId,function(er,re){
+						expect(re.status).to.equal(config.httpStatus.Ok);
+						done();
+					});
+				});	
+		});
+/*
+* Smoke Test to the service room with the method put for updates the
+* meeting in room
+*/
+	it('PUT rooms/{:roomId}/meetings/{:meetingId}, Verify the status 200',function(done){	
+			num = displayName.substring(10);
+			jsonMeeting = util.generatemeetingJson(num);
+			roomManagerAPI.
+				post(token,endPoint,jsonMeeting,function(err,res){
+					expect(res.status).to.equal(config.httpStatus.Ok);
+					meetingId = res.body._id
+					jsonMeeting.title = 'ChangedByAPI'
+					put(token,endPoint+'/'+meetingId,jsonMeeting,function(er,re){
+						expect(re.status).to.equal(config.httpStatus.Ok);
+						done();
+					});
+				});	
+		});
 });
 
 describe('Smoke Testing for Room Resources routes ', function() {
