@@ -24,7 +24,6 @@ var selectProperties = function(service){
 	}
 	
 };
-//Verify by API
 var verifyProperties = function(serviceType,item){
 	var count = 0;
 	var properties = selectProperties(serviceType);
@@ -34,7 +33,6 @@ var verifyProperties = function(serviceType,item){
 	});
 	return (count === properties.length)? true: false;
 };
-
 var searchProperty = function(property, itemJson){
 	for(var prop in itemJson){
 		if(property == prop)
@@ -49,8 +47,6 @@ var searchValue = function(prop, value, item){
 	}
 	return false;
 };
-
-//Verify By DB
 var verifyValues = function(nameItem, idItem, item, callback){
 	properties = selectProperties(nameItem);
 	var count = 0;
