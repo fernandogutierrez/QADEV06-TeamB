@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 var init          = require('../init.js');
 var expect        = require('chai').expect;
 var RequireServices = require(GLOBAL.initialDirectory+'/lib/req-serv.js').RequireServices;
