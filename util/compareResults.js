@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 var init          = require('../init.js');
 var expect        = require('chai').expect;
 var RequireServices = require(GLOBAL.initialDirectory+'/lib/req-serv.js').RequireServices;
@@ -17,10 +18,19 @@ var selectProperties = function(service){
 		}
 			/////serviceprperties
 			break;
+
+        case 'rooms':{
+			var properties = require(GLOBAL.initialDirectory+'/config/room.json');
+			var prop = properties.roomProperties;
+			return prop;
+		}
+		    break;
+
 		case 'resourcemodels':{
 			var properties = requireServices.resourceConfig().resourceProperties;
 			return properties;
 		}
+		    break;
 	}
 	
 };
